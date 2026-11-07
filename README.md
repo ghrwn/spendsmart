@@ -28,3 +28,7 @@ The purpose of SpendSmart is to help individuals monitor where their money goes,
 ## Project Description
 
 An individual personal finance application designed to help users track income, expenses, and monthly budgets.
+
+## Development Workflow
+
+SpendSmart uses Git feature branches and pull requests to organize development work. Changes are reviewed before being merged into the protected main branch.
