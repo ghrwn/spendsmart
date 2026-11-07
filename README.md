@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SpendSmart
 
-## Getting Started
+SpendSmart is a personal budget tracker that helps users manage their income, expenses, and monthly budgets. It aims to make tracking personal finances simple and understandable through an organized dashboard.
 
-First, run the development server:
+## Project Purpose
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The purpose of SpendSmart is to help individuals monitor where their money goes, organize their spending, and make better financial decisions.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Planned Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Record income and expenses.
+- Categorize transactions.
+- Set monthly budgets.
+- View spending summaries through a dashboard.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technology Stack
 
-## Learn More
+- Next.js
+- TypeScript
+- Tailwind CSS
+- React
+- Git and GitHub
 
-To learn more about Next.js, take a look at the following resources:
+## Team Members
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Herwin Gaela
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Description
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+An individual personal finance application designed to help users track income, expenses, and monthly budgets.
