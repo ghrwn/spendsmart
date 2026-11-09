@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Transaction, TransactionType } from "@/types/transaction";
 
 interface TransactionFormProps {
@@ -18,11 +18,21 @@ function getLocalDate() {
   return `${year}-${month}-${day}`;
 }
 
+function subscribeToDateChanges() {
+  return () => {};
+}
+
 export default function TransactionForm({
   editingTransaction,
   onSaveTransaction,
   onCancelEdit,
 }: TransactionFormProps) {
+  const today = useSyncExternalStore(
+    subscribeToDateChanges,
+    getLocalDate,
+    () => "",
+  );
+
   const [description, setDescription] = useState(
     editingTransaction?.description ?? "",
   );
@@ -37,16 +47,16 @@ export default function TransactionForm({
   const [category, setCategory] = useState(
     editingTransaction?.category ?? "",
   );
-  const [date, setDate] = useState(
-    editingTransaction?.date ?? getLocalDate(),
-  );
+  const [date, setDate] = useState(editingTransaction?.date ?? "");
   const [error, setError] = useState("");
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!/^\d+(\.\d{1,2})?$/.test(amount)) {
-      setError("Please enter a valid amount with no more than two decimal places.");
+      setError(
+        "Please enter a valid amount with no more than two decimal places.",
+      );
       return;
     }
 
@@ -67,7 +77,9 @@ export default function TransactionForm({
       return;
     }
 
-    if (!date) {
+    const transactionDate = date || today;
+
+    if (!transactionDate) {
       setError("Please select a transaction date.");
       return;
     }
@@ -78,7 +90,7 @@ export default function TransactionForm({
       amountInMinorUnits,
       type,
       category,
-      date,
+      date: transactionDate,
     };
 
     onSaveTransaction(transaction);
@@ -196,7 +208,7 @@ export default function TransactionForm({
           <input
             id="date"
             type="date"
-            value={date}
+            value={date || today}
             onChange={(event) => setDate(event.target.value)}
             required
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"

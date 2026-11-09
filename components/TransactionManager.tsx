@@ -1,19 +1,19 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import BudgetManager from "@/components/BudgetManager";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
 import {
   addTransaction,
   deleteTransaction,
-  getTransactions,
+  getServerTransactionsSnapshot,
+  getTransactionsSnapshot,
+  parseTransactionsSnapshot,
+  subscribeToTransactions,
   updateTransaction,
 } from "@/lib/transactions";
 import { Transaction } from "@/types/transaction";
-
-interface TransactionManagerProps {
-  children?: ReactNode;
-}
 
 const SELECTED_MONTH = "2026-11";
 
@@ -23,22 +23,20 @@ const currencyFormatter = new Intl.NumberFormat("en-PH", {
   maximumFractionDigits: 2,
 });
 
-export default function TransactionManager({
-  children,
-}: TransactionManagerProps) {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+export default function TransactionManager() {
+  const transactionSnapshot = useSyncExternalStore(
+    subscribeToTransactions,
+    getTransactionsSnapshot,
+    getServerTransactionsSnapshot,
+  );
+
+  const transactions = useMemo(
+    () => parseTransactionsSnapshot(transactionSnapshot),
+    [transactionSnapshot],
+  );
+
   const [editingTransaction, setEditingTransaction] =
     useState<Transaction | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    function loadTransactions() {
-      setTransactions(getTransactions());
-      setIsLoaded(true);
-    }
-
-    loadTransactions();
-  }, []);
 
   const monthlyTransactions = useMemo(() => {
     return transactions.filter((transaction) =>
@@ -64,17 +62,11 @@ export default function TransactionManager({
   function handleSaveTransaction(transaction: Transaction) {
     if (editingTransaction) {
       updateTransaction(transaction);
-      setTransactions((current) =>
-        current.map((item) =>
-          item.id === transaction.id ? transaction : item,
-        ),
-      );
       setEditingTransaction(null);
       return;
     }
 
     addTransaction(transaction);
-    setTransactions((current) => [...current, transaction]);
   }
 
   function handleEditTransaction(transaction: Transaction) {
@@ -86,21 +78,10 @@ export default function TransactionManager({
 
   function handleDeleteTransaction(id: string) {
     deleteTransaction(id);
-    setTransactions((current) =>
-      current.filter((transaction) => transaction.id !== id),
-    );
 
     if (editingTransaction?.id === id) {
       setEditingTransaction(null);
     }
-  }
-
-  if (!isLoaded) {
-    return (
-      <p className="text-sm text-slate-500" role="status">
-        Loading your financial information...
-      </p>
-    );
   }
 
   return (
@@ -132,7 +113,7 @@ export default function TransactionManager({
 
         <article className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:col-span-2 xl:col-span-1">
           <p className="text-sm font-medium text-slate-500">
-            Remaining Balance
+            Monthly Net Balance
           </p>
           <p className="mt-3 text-2xl font-bold text-slate-900">
             {currencyFormatter.format(
@@ -140,12 +121,12 @@ export default function TransactionManager({
             )}
           </p>
           <p className="mt-2 text-xs text-slate-500">
-            Income minus expenses
+            Income minus expenses for November
           </p>
         </article>
       </section>
 
-      {children}
+      <BudgetManager month={SELECTED_MONTH} transactions={transactions} />
 
       <section id="transactions" className="space-y-6">
         <div>
