@@ -2,6 +2,7 @@ import { Transaction } from "@/types/transaction";
 
 interface TransactionListProps {
   transactions: Transaction[];
+  monthLabel: string;
   onEditTransaction: (transaction: Transaction) => void;
   onDeleteTransaction: (id: string) => void;
 }
@@ -13,26 +14,40 @@ const currencyFormatter = new Intl.NumberFormat("en-PH", {
 
 export default function TransactionList({
   transactions,
+  monthLabel,
   onEditTransaction,
   onDeleteTransaction,
 }: TransactionListProps) {
   if (transactions.length === 0) {
     return (
-      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900">
-          Recent Transactions
+      <section
+        className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+        aria-labelledby="transactions-heading"
+      >
+        <h2
+          id="transactions-heading"
+          className="text-lg font-semibold text-gray-900"
+        >
+          Transactions for {monthLabel}
         </h2>
         <p className="mt-4 text-sm text-gray-500">
-          No transactions yet. Add your first income or expense to get started.
+          No transactions recorded for {monthLabel}. Add an income or expense
+          for this month to see it here.
         </p>
       </section>
     );
   }
 
   return (
-    <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-5 text-lg font-semibold text-gray-900">
-        Recent Transactions
+    <section
+      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+      aria-labelledby="transactions-heading"
+    >
+      <h2
+        id="transactions-heading"
+        className="mb-5 text-lg font-semibold text-gray-900"
+      >
+        Transactions for {monthLabel}
       </h2>
 
       <div className="overflow-x-auto">
