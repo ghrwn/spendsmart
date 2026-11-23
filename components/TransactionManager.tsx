@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import BudgetManager from "@/components/BudgetManager";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
@@ -20,6 +20,22 @@ const currencyFormatter = new Intl.NumberFormat("en-PH", {
   currency: "PHP",
   maximumFractionDigits: 2,
 });
+
+function subscribeToDateChanges() {
+  return () => {};
+}
+
+function getCurrentDateSnapshot(): string {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function getServerDateSnapshot(): string {
+  return "";
+}
 
 function formatMonthLabel(month: string): string {
   const [year, monthNumber] = month.split("-").map(Number);
@@ -42,39 +58,34 @@ export default function TransactionManager() {
     [transactionSnapshot],
   );
 
+  const currentDate = useSyncExternalStore(
+    subscribeToDateChanges,
+    getCurrentDateSnapshot,
+    getServerDateSnapshot,
+  );
   const [selectedMonth, setSelectedMonth] = useState("");
-  const [currentDate, setCurrentDate] = useState("");
   const [editingTransaction, setEditingTransaction] =
     useState<Transaction | null>(null);
 
-  useEffect(() => {
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const currentMonth = `${now.getFullYear()}-${month}`;
-    const day = String(now.getDate()).padStart(2, "0");
-
-    setCurrentDate(`${currentMonth}-${day}`);
-    setSelectedMonth(currentMonth);
-  }, []);
-
-  const monthLabel = selectedMonth
-    ? formatMonthLabel(selectedMonth)
+  const activeMonth = selectedMonth || currentDate.slice(0, 7);
+  const monthLabel = activeMonth
+    ? formatMonthLabel(activeMonth)
     : "Select a month";
-  const defaultTransactionDate = selectedMonth
-    ? selectedMonth === currentDate.slice(0, 7)
+  const defaultTransactionDate = activeMonth
+    ? activeMonth === currentDate.slice(0, 7)
       ? currentDate
-      : `${selectedMonth}-01`
+      : `${activeMonth}-01`
     : "";
 
   const monthlyTransactions = useMemo(() => {
-    if (!selectedMonth) {
+    if (!activeMonth) {
       return [];
     }
 
     return transactions.filter((transaction) =>
-      transaction.date.startsWith(selectedMonth),
+      transaction.date.startsWith(activeMonth),
     );
-  }, [transactions, selectedMonth]);
+  }, [transactions, activeMonth]);
 
   const totals = useMemo(() => {
     return monthlyTransactions.reduce(
@@ -144,7 +155,7 @@ export default function TransactionManager() {
         <input
           id="dashboard-month"
           type="month"
-          value={selectedMonth}
+          value={activeMonth}
           required
           onChange={(event) => {
             const month = event.target.value;
@@ -197,7 +208,7 @@ export default function TransactionManager() {
         </article>
       </section>
 
-      <BudgetManager month={selectedMonth} transactions={transactions} />
+      <BudgetManager month={activeMonth} transactions={transactions} />
 
       <section id="transactions" className="space-y-6">
         <div>
