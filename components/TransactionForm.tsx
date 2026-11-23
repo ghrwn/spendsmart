@@ -1,38 +1,21 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { Transaction, TransactionType } from "@/types/transaction";
 
 interface TransactionFormProps {
+  defaultDate: string;
   editingTransaction: Transaction | null;
   onSaveTransaction: (transaction: Transaction) => void;
   onCancelEdit: () => void;
 }
 
-function getLocalDate() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function subscribeToDateChanges() {
-  return () => {};
-}
-
 export default function TransactionForm({
+  defaultDate,
   editingTransaction,
   onSaveTransaction,
   onCancelEdit,
 }: TransactionFormProps) {
-  const today = useSyncExternalStore(
-    subscribeToDateChanges,
-    getLocalDate,
-    () => "",
-  );
-
   const [description, setDescription] = useState(
     editingTransaction?.description ?? "",
   );
@@ -47,7 +30,9 @@ export default function TransactionForm({
   const [category, setCategory] = useState(
     editingTransaction?.category ?? "",
   );
-  const [date, setDate] = useState(editingTransaction?.date ?? "");
+  const [date, setDate] = useState(
+    editingTransaction?.date ?? defaultDate,
+  );
   const [error, setError] = useState("");
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -77,7 +62,7 @@ export default function TransactionForm({
       return;
     }
 
-    const transactionDate = date || today;
+    const transactionDate = date || defaultDate;
 
     if (!transactionDate) {
       setError("Please select a transaction date.");
@@ -208,7 +193,7 @@ export default function TransactionForm({
           <input
             id="date"
             type="date"
-            value={date || today}
+            value={date || defaultDate}
             onChange={(event) => setDate(event.target.value)}
             required
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
