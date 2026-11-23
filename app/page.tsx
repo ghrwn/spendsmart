@@ -42,20 +42,16 @@ export default function Home() {
         </aside>
 
         <section className="min-w-0 flex-1 overflow-x-hidden p-4 sm:p-8">
-          <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="text-sm text-slate-500">November 2026</p>
-              <h2 className="mt-1 text-2xl font-bold sm:text-3xl">
-                Financial Overview
-              </h2>
-              <p className="mt-2 text-sm text-slate-500">
-                Welcome back! Here is your financial summary.
-              </p>
-            </div>
-
-            <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium">
-              November 2026
-            </div>
+          <header className="mb-8">
+            <p className="text-sm text-slate-500">
+              Personal finance dashboard
+            </p>
+            <h2 className="mt-1 text-2xl font-bold sm:text-3xl">
+              Financial Overview
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">
+              Review your income, expenses, and budgets by month.
+            </p>
           </header>
 
           <TransactionManager />
