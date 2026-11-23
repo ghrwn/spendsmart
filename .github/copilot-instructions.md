@@ -6,7 +6,7 @@ SpendSmart is an individual personal finance tracker. Users record income and ex
 
 ## Technology stack
 
-- Next.js 16.4.6 with the App Router.
+- Next.js 16.4.5 with the App Router.
 - React 19.3.0.
 - TypeScript 5.
 - Tailwind CSS 4.
