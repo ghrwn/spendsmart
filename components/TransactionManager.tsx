@@ -143,7 +143,13 @@ export default function TransactionManager() {
           id="dashboard-month"
           type="month"
           value={selectedMonth}
-          onChange={(event) => handleMonthChange(event.target.value)}
+          required
+          onChange={(event) => {
+            const month = event.target.value;
+            if (/^\\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+              handleMonthChange(month);
+            }
+          }}
           aria-describedby="dashboard-month-help"
           className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:w-auto"
         />
