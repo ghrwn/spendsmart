@@ -181,7 +181,7 @@ export default function BudgetManager({
 
       {monthlyBudgets.length === 0 && (
         <p className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
-          You have not created any budgets for this month yet.
+          You have not created any budgets for this selected month yet.
         </p>
       )}
 
