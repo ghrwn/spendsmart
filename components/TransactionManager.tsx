@@ -146,7 +146,7 @@ export default function TransactionManager() {
           required
           onChange={(event) => {
             const month = event.target.value;
-            if (/^\\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+            if (/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
               handleMonthChange(month);
             }
           }}
